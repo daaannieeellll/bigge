@@ -1,3 +1,5 @@
+const { url } = require("inspector");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -5,7 +7,17 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        "big-pattern": url("/img/bg.svg"),
+      },
+      backgroundSize: {
+        80: "80vh",
+      },
+      fontFamily: {
+        sans: ["Oswald"],
+      },
+    },
   },
   plugins: [],
 };
