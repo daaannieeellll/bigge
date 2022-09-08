@@ -1,8 +1,11 @@
-import type { NextPage } from "next";
+import Card from "@/components/card";
 import Head from "next/head";
-import Link from "next/link";
+import { useRouter } from "next/router";
+
+import type { NextPage } from "next";
 
 const Home: NextPage = () => {
+  const router = useRouter();
   return (
     <div className='flex min-h-screen flex-col items-center justify-center py-2'>
       <Head>
@@ -13,37 +16,19 @@ const Home: NextPage = () => {
       <main
         className='absolute w-full h-full
         flex items-center justify-center
-        bg-[#F98F8F] bg-[url("/img/bg.svg")]
+        bg-[#F98F8F] bg-[url("/images/bg.svg")]
         bg-80 bg-blend-multiply
         '
       >
-        <div
-          className='w-[50vh] max-w-[85vw]
-          aspect-[5/8]
-          bg-[url("/img/linnen.svg")] bg-cover
-          rounded-3xl
-          flex items-center justify-around flex-col
-          shadow-2xl shadow-black
-          '
-        >
-          <div className='w-3/4'>
-            <img src='/img/big.svg' alt=':(' />
-          </div>
-          <div className='text-[2vh] text-center w-4/5 h-1/2'>
-            <p>
-              Oh jee, Bigge! is aan het verhuizen. Maar wees niet getreurd. Er
-              is een grote update onderweg voor n&oacute;g meer speelplezier!
-              <br />
-              In de tussentijd kun je{" "}
-              <Link href='https://bigge.herokuapp.com'>
-                <a className='text-red-900 underline'>hier klikken</a>
-              </Link>{" "}
-              om alsnog een spel te starten.
-              <br />
-              Hopelijk tot gauw! :)
-            </p>
-          </div>
-        </div>
+        <Card
+          type='Bigge'
+          text='Hii, superleuk dat je Bigge! komt spelen.
+                Bigge! is het leukste drankspelletje om de avond mee te beginnen of te eindigen!
+                Roep je vienden erbij en swipe deze kaart om te beginnen met het spel! Veel plezier!'
+          onDiscard={() => {
+            router.push("/app");
+          }}
+        />
       </main>
     </div>
   );
