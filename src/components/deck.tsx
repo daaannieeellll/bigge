@@ -1,30 +1,23 @@
-import type { CardType } from "@/constants/cardTypes";
 import { useEffect, useState } from "react";
 
 import Card from "@/components/card";
 import { data } from "/data";
 
-const types: CardType[] = [
-  "Big",
-  "Baas",
-  "Lepeltje Lepeltje",
-  "Medusa",
-  "Most Likely To",
-  "Never Have I Ever",
-  "Opdracht",
-  "Stemrecht",
-  "Vingeren",
-];
+interface CardData {
+  type: string;
+  text: string;
+}
 
 const Deck = () => {
   // generate deck getter and setter
-  const [deck, setDeck] = useState<{ type: string; text: string }[]>([]);
+  const [deck, setDeck] = useState<CardData[]>([]);
   const [cardNo, setCardNo] = useState(0);
 
   let addCard = () => {
     // get data
-    const type = types[Math.floor(Math.random() * types.length)];
-    const text = data[type][Math.floor(Math.random() * data[type].length)];
+    const idx = (Math.random() * data.meta.types.length) | 0;
+    const type = data.meta.types[idx];
+    const text = data.cards[idx][(Math.random() * data.cards[idx].length) | 0];
 
     // store/update data
     setDeck((deck) => {
@@ -37,16 +30,14 @@ const Deck = () => {
 
   // Initialize deck
   useEffect(() => {
-    const initialCards = [
-      {
-        type: "Opdracht",
-        text: data.Opdracht[Math.floor(Math.random() * data.Opdracht.length)],
-      },
-      {
-        type: "Opdracht",
-        text: data.Opdracht[Math.floor(Math.random() * data.Opdracht.length)],
-      },
-    ];
+    const initialCards = [...Array(2)].map(() => {
+      const idx = (Math.random() * data.meta.types.length) | 0;
+      const type = data.meta.types[idx];
+      return {
+        type,
+        text: data.cards[idx][(Math.random() * data.cards[idx].length) | 0],
+      };
+    });
 
     setDeck(initialCards);
     setCardNo(initialCards.length);
