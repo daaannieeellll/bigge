@@ -8,9 +8,10 @@ const to = () => ({
   y: 0,
   scale: 1,
   rot: -10 + Math.random() * 20,
+  opacity: 1,
   delay: 0,
 });
-const from = () => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
+const from = () => ({ x: 0, rot: 0, scale: 1.5, y: 0, opacity: 0 });
 
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number) =>
@@ -61,7 +62,7 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
           scale,
           delay: undefined,
           config: {
-            friction: 50,
+            friction: 20,
             tension: down ? 800 : _discarded ? 200 : 500,
           },
         };
@@ -101,6 +102,7 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
           x: props.x,
           y: props.y,
           // transform: interpolate([props.rot, props.scale], trans),
+          opacity: interpolate([props.opacity], (opacity) => opacity),
         }}
       >
         <div

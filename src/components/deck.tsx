@@ -27,15 +27,17 @@ const Deck = () => {
     const text = data[type][Math.floor(Math.random() * data[type].length)];
 
     // store/update data
-    setDeck((deck) => [{ type, text }, ...deck.slice(0, -1)]);
+    setDeck((deck) => {
+      return deck.length < 3
+        ? [{ type, text }, ...deck]
+        : [{ type, text }, ...deck.slice(0, -1)];
+    });
     setCardNo((cardNo) => cardNo + 1);
-
-    console.log(deck);
   };
 
   // Initialize deck
   useEffect(() => {
-    setDeck([
+    const initialCards = [
       {
         type: "Opdracht",
         text: data.Opdracht[Math.floor(Math.random() * data.Opdracht.length)],
@@ -44,12 +46,10 @@ const Deck = () => {
         type: "Opdracht",
         text: data.Opdracht[Math.floor(Math.random() * data.Opdracht.length)],
       },
-      {
-        type: "Opdracht",
-        text: data.Opdracht[Math.floor(Math.random() * data.Opdracht.length)],
-      },
-    ]);
-    setCardNo(3);
+    ];
+
+    setDeck(initialCards);
+    setCardNo(initialCards.length);
   }, []);
 
   return (
