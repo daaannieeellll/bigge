@@ -4,8 +4,8 @@ import type { Redirect } from "next";
 import type {
   AuthGetServerSideProps,
   AuthServerSidePropsContext,
-} from "@/types/PageGuard";
-import { routes } from "@/constants/routes";
+} from "@/types/auth/PageGuard";
+import { routes } from "@/constants/auth/routes";
 
 export enum RedirectTo {
   None,

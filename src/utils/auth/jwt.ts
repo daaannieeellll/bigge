@@ -1,4 +1,4 @@
-import { cookieNames } from "@/constants/cookies";
+import { cookieNames } from "@/constants/auth/cookies";
 import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
 

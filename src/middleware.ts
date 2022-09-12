@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { userAuthenticated } from "./utils/jwt";
-import { routes } from "./constants/routes";
+import { userAuthenticated } from "./utils/auth/jwt";
+import { routes } from "./constants/auth/routes";
 
 import type { NextRequest } from "next/server";
 

@@ -1,4 +1,4 @@
-import { RedirectTo, withAuth } from "@/utils/PageGuard";
+import { RedirectTo, withAuth } from "@/utils/auth/PageGuard";
 import type { BuiltInProviderType } from "next-auth/providers";
 import type { ClientSafeProvider, LiteralUnion } from "next-auth/react";
 

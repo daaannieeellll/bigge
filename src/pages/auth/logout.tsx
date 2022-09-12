@@ -1,4 +1,4 @@
-import { RedirectTo, withAuth } from "@/utils/PageGuard";
+import { RedirectTo, withAuth } from "@/utils/auth/PageGuard";
 import { signOut } from "next-auth/react";
 
 export const getServerSideProps = withAuth(undefined, {

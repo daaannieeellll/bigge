@@ -1,5 +1,5 @@
-import { cookieNames } from "@/constants/cookies";
-import { routes } from "@/constants/routes";
+import { cookieNames } from "@/constants/auth/cookies";
+import { routes } from "@/constants/auth/routes";
 import type { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
 import type { NextAuthOptions } from "next-auth";
 
