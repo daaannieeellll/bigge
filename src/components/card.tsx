@@ -1,20 +1,19 @@
 import { useSpring, animated, to as interpolate } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = () => ({
   x: 0,
   y: 0,
   scale: 1,
-  rot: -10 + Math.random() * 20,
+  rot: -2.5 + Math.random() * 5,
   opacity: 1,
 });
-const from = () => ({ x: 0, rot: 0, scale: 1.5, y: 0, opacity: 0 });
+const from = () => ({ x: 0, rot: 0, scale: 0.7, y: 0, opacity: 0 });
 
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
-const trans = (r: number, s: number) =>
-  `rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`;
+const trans = (r: number, s: number) => `rotate(${r}deg) scale(${s})`;
 
 interface ICardProps {
   onDiscard?: () => void;
@@ -35,6 +34,20 @@ const normalize = (dx: number, dy: number, dirX: number, dirY: number) => {
 };
 
 const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
+  // helper reference to get element positioning
+  const ref = useRef<HTMLDivElement>(null);
+  const [centerY, setCenterY] = useState(0);
+  const setCardCenter = () =>
+    setCenterY(
+      ((ref?.current?.clientHeight || 0) + (ref?.current?.offsetTop || 0)) / 2
+    );
+  // set vertical center on first render and update whenever the card resizes
+  useEffect(() => setCardCenter(), []);
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(setCardCenter);
+    if (ref.current) resizeObserver.observe(ref.current);
+  }, []);
+
   // The set flags all the cards that are flicked out
   const [discarded, setDiscarded] = useState(false);
   let _discarded = discarded;
@@ -45,16 +58,21 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
     from: from(),
   }));
 
-  // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
+  // Create a drag gesture
   const bind = useDrag(
     ({
       down,
+      initial: [, initY],
+      offset: [offsetX],
       movement: [mx, my],
       direction: [dirX, dirY],
       velocity: [vx, vy],
     }) => {
       // set minimal velocity for card to discard
-      const trigger = vx + vy > 0.2;
+      const trigger = vx + vy > 0.6;
+
+      // card is dragged from upper half
+      const fromUpperHalf = centerY > initY ? 1 : -1;
 
       // If button/finger's up and trigger velocity is reached, we flag the card ready to discard
       if (!down && trigger) _discarded = true;
@@ -66,10 +84,10 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
         // When a card is gone it flys out, otherwise goes back to zero
         if (_discarded) {
           const [dx, dy] = normalize(mx, my, dirX, dirY);
-          const x = window.innerWidth * dx;
-          const y = window.innerHeight * dy;
-          const rot = mx / 100 + dirX * 40 * vx;
-
+          const x = window.innerWidth * dx * 2;
+          const y = window.innerHeight * dy * 2;
+          const rot = fromUpperHalf * dirX * 90;
+          console.log(rot);
           return {
             x,
             y,
@@ -77,7 +95,7 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
             scale,
             config: {
               friction: 40,
-              tension: down ? 800 : 400,
+              tension: down ? 800 : 150,
             },
           };
         } else {
@@ -85,7 +103,8 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
           const y = down ? my : 0;
 
           // How much the card tilts, flicking it harder makes it rotate faster
-          const rot = mx / 100;
+          const rot = (fromUpperHalf * dirX * vx * Math.abs(offsetX)) / 10;
+          console.log(rot);
 
           return {
             x,
@@ -93,8 +112,8 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
             rot,
             scale,
             config: {
-              friction: 40,
-              tension: down ? 800 : 500,
+              friction: 50,
+              tension: down ? 600 : 500,
             },
           };
         }
@@ -116,6 +135,7 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
   return (
     <>
       <animated.div
+        ref={ref}
         {...bind()}
         className='
           absolute w-full max-h-[80%] max-w-[85%]
@@ -133,7 +153,7 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
         style={{
           x: props.x,
           y: props.y,
-          // transform: interpolate([props.rot, props.scale], trans),
+          transform: interpolate([props.rot, props.scale], trans),
           opacity: interpolate([props.opacity], (opacity) => opacity),
         }}
       >
