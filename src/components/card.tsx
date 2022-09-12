@@ -9,7 +9,6 @@ const to = () => ({
   scale: 1,
   rot: -10 + Math.random() * 20,
   opacity: 1,
-  delay: 0,
 });
 const from = () => ({ x: 0, rot: 0, scale: 1.5, y: 0, opacity: 0 });
 
@@ -72,7 +71,6 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
           y,
           rot,
           scale,
-          delay: undefined,
           config: {
             friction: 20,
             tension: down ? 800 : _discarded ? 200 : 500,
