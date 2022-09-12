@@ -4,9 +4,10 @@ const App = () => {
   return (
     <div
       className='
-        bg-[#F98F8F] bg-[url("/images/bg.svg")] bg-80 bg-blend-multiply
+        absolute w-full h-full
+        overflow-hidden
         flex items-center justify-center
-        h-[100vh]
+        bg-[#F98F8F] bg-[url("/images/bg.svg")] bg-80 bg-blend-multiply
       '
     >
       <Deck />

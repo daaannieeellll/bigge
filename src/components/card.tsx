@@ -47,21 +47,26 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
 
   // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
   const bind = useDrag(
-    ({ down, movement: [mx, my], direction: [dirX, dirY], velocity }) => {
+    ({
+      down,
+      movement: [mx, my],
+      direction: [dirX, dirY],
+      velocity: [vx, vy],
+    }) => {
       // If you flick hard enough it should trigger the card to fly out
-      const trigger = velocity[0] > 0.2;
+      const trigger = vx + vy > 0.2;
 
       // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
       if (!down && trigger) _discarded = true;
 
       api.start(() => {
-        // When a card is gone it flys out left or right, otherwise goes back to zero
+        // When a card is gone it flys out, otherwise goes back to zero
         const [dx, dy] = normalize(mx, my, dirX, dirY);
         const x = _discarded ? window.innerWidth * dx : down ? mx : 0;
         const y = _discarded ? window.innerHeight * dy : down ? my : 0;
 
         // How much the card tilts, flicking it harder makes it rotate faster
-        const rot = mx / 100 + (_discarded ? dirX * 40 * velocity[0] : 0);
+        const rot = mx / 100 + (_discarded ? dirX * 40 * vx : 0);
 
         // Active cards lift up a bit
         const scale = down ? 1.03 : 1;
@@ -72,8 +77,8 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
           rot,
           scale,
           config: {
-            friction: 20,
-            tension: down ? 800 : _discarded ? 200 : 500,
+            friction: 40,
+            tension: down ? 800 : _discarded ? 400 : 500,
           },
         };
       });
@@ -96,7 +101,7 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
       <animated.div
         {...bind()}
         className='
-          absolute w-[50vh] max-w-[85vw]
+          absolute w-full max-h-[80%] max-w-[85%]
           aspect-[5/8]
 
           will-change-transform
