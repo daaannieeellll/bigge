@@ -53,34 +53,51 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
       direction: [dirX, dirY],
       velocity: [vx, vy],
     }) => {
-      // If you flick hard enough it should trigger the card to fly out
+      // set minimal velocity for card to discard
       const trigger = vx + vy > 0.2;
 
-      // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
+      // If button/finger's up and trigger velocity is reached, we flag the card ready to discard
       if (!down && trigger) _discarded = true;
 
       api.start(() => {
-        // When a card is gone it flys out, otherwise goes back to zero
-        const [dx, dy] = normalize(mx, my, dirX, dirY);
-        const x = _discarded ? window.innerWidth * dx : down ? mx : 0;
-        const y = _discarded ? window.innerHeight * dy : down ? my : 0;
-
-        // How much the card tilts, flicking it harder makes it rotate faster
-        const rot = mx / 100 + (_discarded ? dirX * 40 * vx : 0);
-
         // Active cards lift up a bit
         const scale = down ? 1.03 : 1;
 
-        return {
-          x,
-          y,
-          rot,
-          scale,
-          config: {
-            friction: 40,
-            tension: down ? 800 : _discarded ? 400 : 500,
-          },
-        };
+        // When a card is gone it flys out, otherwise goes back to zero
+        if (_discarded) {
+          const [dx, dy] = normalize(mx, my, dirX, dirY);
+          const x = window.innerWidth * dx;
+          const y = window.innerHeight * dy;
+          const rot = mx / 100 + dirX * 40 * vx;
+
+          return {
+            x,
+            y,
+            rot,
+            scale,
+            config: {
+              friction: 40,
+              tension: down ? 800 : 400,
+            },
+          };
+        } else {
+          const x = down ? mx : 0;
+          const y = down ? my : 0;
+
+          // How much the card tilts, flicking it harder makes it rotate faster
+          const rot = mx / 100;
+
+          return {
+            x,
+            y,
+            rot,
+            scale,
+            config: {
+              friction: 40,
+              tension: down ? 800 : 500,
+            },
+          };
+        }
       });
 
       if (!down && _discarded) {
