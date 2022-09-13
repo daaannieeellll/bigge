@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import maxDeckSize from "@/constants/gameConfig";
 import CardContainer from "@/components/cardContainer";
 import CardData from "@/components/cardData";
 import { data } from "/data";
@@ -19,7 +20,7 @@ const Deck = () => {
 
     // store/update data
     setDeck((deck) => {
-      return deck.length < 3
+      return deck.length < maxDeckSize
         ? [{ type, text }, ...deck]
         : [{ type, text }, ...deck.slice(0, -1)];
     });
@@ -28,7 +29,7 @@ const Deck = () => {
 
   // Initialize deck
   useEffect(() => {
-    const initialCards = [...Array(2)].map(() => {
+    const initialCards = [...Array(maxDeckSize - 1)].map(() => {
       const idx = (Math.random() * data.meta.types.length) | 0;
       const type = data.meta.types[idx];
       return {
