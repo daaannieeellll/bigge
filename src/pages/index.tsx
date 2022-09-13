@@ -1,6 +1,8 @@
-import Card from "@/components/card";
 import Head from "next/head";
 import { useRouter } from "next/router";
+
+import CardContainer from "@/components/cardContainer";
+import CardData from "@/components/cardData";
 
 import type { NextPage } from "next";
 
@@ -20,15 +22,20 @@ const Home: NextPage = () => {
         bg-80 bg-blend-multiply
         '
       >
-        <Card
-          type='Bigge'
-          text='Hii, superleuk dat je Bigge! komt spelen.
-                Bigge! is het leukste drankspelletje om de avond mee te beginnen of te eindigen!
-                Roep je vienden erbij en swipe deze kaart om te beginnen met het spel! Veel plezier!'
+        <CardContainer
           onDiscard={() => {
             router.push("/app");
           }}
-        />
+        >
+          <CardData
+            type='Bigge'
+            text='Hii, superleuk dat je Bigge! komt spelen. Bigge! is
+                  het leukste drankspelletje om de avond mee te beginnen
+                  of te eindigen!
+                  Roep je vienden erbij en swipe deze kaart om te beginnen
+                  met het spel! Veel plezier!'
+          />
+        </CardContainer>
       </main>
     </div>
   );
