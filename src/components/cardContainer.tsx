@@ -85,7 +85,7 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
           const x = window.innerWidth * dx * 2;
           const y = window.innerHeight * dy * 2;
           const rot = fromUpperHalf * dirX * 90;
-          console.log(rot);
+
           return {
             x,
             y,
@@ -102,7 +102,6 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
 
           // How much the card tilts, flicking it harder makes it rotate faster
           const rot = (fromUpperHalf * dirX * vx * Math.abs(offsetX)) / 10;
-          console.log(rot);
 
           return {
             x,

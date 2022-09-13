@@ -3,6 +3,7 @@ export interface ICardDataProps {
   type: string;
   text: string;
 }
+
 const CardData = ({ type, text }: ICardDataProps) => {
   return (
     <div
