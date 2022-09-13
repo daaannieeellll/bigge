@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 
-import Card from "@/components/card";
+import CardContainer from "@/components/cardContainer";
+import CardData from "@/components/cardData";
 import { data } from "/data";
 
-interface CardData {
-  type: string;
-  text: string;
-}
+import type { ICardDataProps } from "@/components/cardData";
 
 const Deck = () => {
   // generate deck getter and setter
-  const [deck, setDeck] = useState<CardData[]>([]);
+  const [deck, setDeck] = useState<ICardDataProps[]>([]);
   const [cardNo, setCardNo] = useState(0);
 
   let addCard = () => {
@@ -46,12 +44,9 @@ const Deck = () => {
   return (
     <>
       {deck.map((card, idx) => (
-        <Card
-          key={cardNo - idx}
-          type={card.type}
-          text={card.text}
-          onDiscard={addCard}
-        />
+        <CardContainer key={cardNo - idx} onDiscard={addCard}>
+          <CardData type={card.type} text={card.text} />
+        </CardContainer>
       ))}
     </>
   );

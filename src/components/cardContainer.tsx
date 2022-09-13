@@ -1,6 +1,6 @@
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { useSpring, animated, to as interpolate } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
-import { useEffect, useRef, useState } from "react";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = () => ({
@@ -15,12 +15,6 @@ const from = () => ({ x: 0, rot: 0, scale: 0.7, y: 0, opacity: 0 });
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number) => `rotate(${r}deg) scale(${s})`;
 
-interface ICardProps {
-  onDiscard?: () => void;
-  type: string;
-  text: string;
-}
-
 const normalize = (dx: number, dy: number, dirX: number, dirY: number) => {
   // avoid zero-division
   if (dx === 0 && dy === 0) return [dx, dy];
@@ -33,7 +27,11 @@ const normalize = (dx: number, dy: number, dirX: number, dirY: number) => {
   return [(x / y) * dirX, dirY];
 };
 
-const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
+interface ICardProps {
+  children: ReactNode;
+  onDiscard?: () => void;
+}
+const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
   // helper reference to get element positioning
   const ref = useRef<HTMLDivElement>(null);
   const [centerY, setCenterY] = useState(0);
@@ -157,22 +155,10 @@ const Card = ({ type, text, onDiscard: discardHandler }: ICardProps) => {
           opacity: interpolate([props.opacity], (opacity) => opacity),
         }}
       >
-        <div
-          className='
-         w-full h-full
-           flex items-center justify-around flex-col
-           '
-        >
-          <div className='w-3/4 select-none'>
-            <img src={`/images/types/${type}.svg`} alt={type} />
-          </div>
-          <div className='text-[2vh] text-center w-4/5 h-1/2 select-none'>
-            <p>{text}</p>
-          </div>
-        </div>
+        {children}
       </animated.div>
     </>
   );
 };
 
-export default Card;
+export default CardContainer;
