@@ -1,4 +1,5 @@
 export interface ICardDataProps {
+  id?: number;
   type: string;
   text: string;
 }
