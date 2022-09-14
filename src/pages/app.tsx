@@ -1,5 +1,5 @@
 import { animated, useSpring } from "@react-spring/web";
-import Deck from "@/components/deck";
+import GameDeck from "@/components/gameDeck";
 
 import type { TypeInfo } from "@/types/card";
 
@@ -20,7 +20,7 @@ const App = () => {
         bg-[url("/images/bg.svg")] bg-80 bg-blend-multiply
         '
     >
-      <Deck onNewType={changeBackground} />
+      <GameDeck onNewTopCard={changeBackground} />
     </animated.div>
   );
 };
