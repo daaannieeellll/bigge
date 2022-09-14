@@ -24,7 +24,7 @@ const Home: NextPage = () => {
       >
         <CardContainer
           onDiscard={() => {
-            router.push("/app");
+            router.push("/play");
           }}
         >
           <CardData
