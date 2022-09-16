@@ -135,7 +135,7 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
         ref={ref}
         {...bind()}
         className='
-          absolute w-full max-h-[80%] max-w-[85%]
+          absolute max-h-[70vh] max-w-[85vw]
           aspect-[5/8]
 
           will-change-transform

@@ -14,7 +14,7 @@ const Play = () => {
     <animated.div
       style={{ backgroundColor: props.color }}
       className='
-        absolute w-full h-full
+        absolute h-[100vh] w-[100vw]
         overflow-hidden
         flex items-center justify-center
         bg-[url("/images/bg.svg")] bg-80 bg-blend-multiply
