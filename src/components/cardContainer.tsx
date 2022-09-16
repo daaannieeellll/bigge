@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { useSpring, animated, to as interpolate } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
+import { cardRatio, maxCardHeight, maxCardWidth } from "@/constants/cards";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = () => ({
@@ -34,16 +35,29 @@ interface ICardProps {
 const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
   // helper reference to get element positioning
   const ref = useRef<HTMLDivElement>(null);
+  const [cardWidth, setCardWidth] = useState(0);
   const [centerY, setCenterY] = useState(0);
-  const setCardCenter = () =>
+
+  const setCardProperties = () => {
     setCenterY(
       ((ref?.current?.clientHeight || 0) + (ref?.current?.offsetTop || 0)) / 2
     );
+    const parent = ref.current?.parentElement;
+    if (parent)
+      setCardWidth(
+        maxCardWidth * parent.clientWidth >
+          ((maxCardHeight * cardRatio.x) / cardRatio.y) * parent.clientHeight
+          ? ((maxCardHeight * cardRatio.x) / cardRatio.y) * parent.clientHeight
+          : maxCardWidth * parent.clientWidth
+      );
+  };
+
   // set vertical center on first render and update whenever the card resizes
-  useEffect(() => setCardCenter(), []);
+  useEffect(() => setCardProperties(), []);
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(setCardCenter);
-    if (ref.current) resizeObserver.observe(ref.current);
+    const resizeObserver = new ResizeObserver(setCardProperties);
+    if (ref.current?.parentElement)
+      resizeObserver.observe(ref.current.parentElement);
   }, []);
 
   // The set flags all the cards that are flicked out
@@ -135,8 +149,7 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
         ref={ref}
         {...bind()}
         className='
-          absolute max-h-[70vh] max-w-[85vw]
-          aspect-[5/8]
+          absolute
 
           will-change-transform
           flex items-center justify-center
@@ -148,6 +161,8 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
         '
         key={0}
         style={{
+          width: cardWidth,
+          aspectRatio: `${cardRatio.x} / ${cardRatio.y}`,
           x: props.x,
           y: props.y,
           transform: interpolate([props.rot, props.scale], trans),

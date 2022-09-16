@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main
-        className='absolute w-[100vw] h-[100vh]
+        className='absolute w-full h-full
         flex items-center justify-center
         bg-[#F98F8F] bg-[url("/images/bg.svg")]
         bg-80 bg-blend-multiply
