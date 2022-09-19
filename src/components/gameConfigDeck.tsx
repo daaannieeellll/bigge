@@ -12,7 +12,7 @@ class GameConfigDeck extends BaseDeck<string, { players: string[] }> {
   protected initializeDeck(): void {
     this.setState({
       deck: [...Array(minPlayerCount)].map(
-        (_, i) => `Speler ${minPlayerCount - i}`
+        (_, i) => `Speler ${minPlayerCount - i}:`
       ),
       cardCount: minPlayerCount,
       players: [],
@@ -22,7 +22,7 @@ class GameConfigDeck extends BaseDeck<string, { players: string[] }> {
   private addCard() {
     this.setState(({ deck, cardCount }) => {
       return {
-        deck: [`Speler ${cardCount + 1}`, ...deck],
+        deck: [`Speler ${cardCount + 1}:`, ...deck],
         cardCount: cardCount + 1,
       };
     });
@@ -43,18 +43,42 @@ class GameConfigDeck extends BaseDeck<string, { players: string[] }> {
           return true;
         }}
       >
-        <label>{label}</label>
-        <input
-          onBlur={(e) => {
-            this.setState(({ players }) => {
-              // insert/update player name when input loses focus
-              const newPlayers = [...players];
-              // TODO: check if value === ''
-              newPlayers[this.state.cardCount - idx - 1] = e.target.value;
-              return { players: newPlayers };
-            });
-          }}
-        />
+        <div
+          className='
+            w-full h-full
+            flex items-center flex-col justify-around
+          '
+        >
+          <div className='w-3/4 select-none'>
+            <img src={`/images/types/Bigge.svg`} alt='Bigge' />
+          </div>
+          <div
+            className='
+              h-1/3 w-full
+              flex flex-col items-center justify-start
+              font-providence text-lg
+            '
+          >
+            <label>{label}</label>
+            <input
+              className='
+                w-3/4
+                bg-transparent
+                border-b-2 border-gray-500 border-dashed
+                text-center text-md
+              '
+              onBlur={(e) => {
+                this.setState(({ players }) => {
+                  // insert/update player name when input loses focus
+                  const newPlayers = [...players];
+                  // TODO: check if value === ''
+                  newPlayers[this.state.cardCount - idx - 1] = e.target.value;
+                  return { players: newPlayers };
+                });
+              }}
+            />
+          </div>
+        </div>
       </CardContainer>
     );
   }
