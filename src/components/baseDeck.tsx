@@ -41,7 +41,7 @@ abstract class BaseDeck<
         <div
           className='
             w-full h-full
-            grid justify-items-center items-center
+            grid grid-cols-1 grid-rows-1 justify-items-center items-center
           '
         >
           {this.state.deck.map(this.mapper)}

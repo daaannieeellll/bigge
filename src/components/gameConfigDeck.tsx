@@ -65,20 +65,24 @@ class GameConfigDeck extends BaseDeck<
             '
           >
             <label>{label}</label>
+            {/* TODO: focus input on tap/click card */}
             <input
               className='
                 w-3/4
                 bg-transparent
                 border-b-2 border-gray-500 border-dashed
                 text-center
+                outline-none
               '
               onBlur={(e) => {
-                // TODO: move to onDiscard
                 this.setState(({ players }) => {
                   // insert/update player name when input loses focus
                   const newPlayers = [...players];
-                  // TODO: check if value === ''
-                  newPlayers[this.state.cardCount - idx - 1] = e.target.value;
+
+                  // only add player name if it contains at least three characters
+                  if (e.target.value.length >= 3)
+                    newPlayers[this.state.cardCount - idx - 1] = e.target.value;
+                  else newPlayers.splice(this.state.cardCount - idx - 1, 1);
                   return { players: newPlayers };
                 });
               }}
@@ -90,25 +94,39 @@ class GameConfigDeck extends BaseDeck<
   }
 
   protected override renderAdditional() {
-    const renderButton = this.state.players?.length >= minPlayerCount;
+    const lastPlayerName = this.state.players?.at(-1);
+    const renderButton =
+      this.state.players?.length >= minPlayerCount &&
+      lastPlayerName &&
+      lastPlayerName.length >= 3;
 
     return (
       <>
-        {renderButton && (
-          <button
+        {
+          <div
             className='
-              p-3
+              w-[30%] h-[70%]
+              flex items-center justify-center
               bg-[url("/images/linnen.svg")] bg-cover
-              rounded-lg
+              rounded-xl
+              shadow-2xl shadow-black
+              text-xl
+              transition-all duration-300 ease-in-out
             '
+            style={{
+              marginBottom: renderButton ? "10%" : 0,
+              opacity: renderButton ? 1 : 0,
+              transform: renderButton ? "scale(1)" : "scale(0)",
+            }}
             onClick={() => {
               // TODO: pass players list
+              // TODO: test if Link is an option
               this.props.router.push("/play");
             }}
           >
             Spel starten!
-          </button>
-        )}
+          </div>
+        }
       </>
     );
   }
