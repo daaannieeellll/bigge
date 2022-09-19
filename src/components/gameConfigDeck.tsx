@@ -1,10 +1,15 @@
 import BaseDeck from "@/components/baseDeck";
 import CardContainer from "@/components/cardContainer";
 import { minPlayerCount } from "@/constants/gameConfig";
+import { withRouter, NextRouter } from "next/router";
 import { ReactNode } from "react";
 
-class GameConfigDeck extends BaseDeck<string, { players: string[] }> {
-  constructor(props: {}) {
+class GameConfigDeck extends BaseDeck<
+  string,
+  { players: string[] },
+  { router: NextRouter }
+> {
+  constructor(props: { router: NextRouter }) {
     super(props);
     this.addCard = this.addCard.bind(this);
   }
@@ -56,7 +61,7 @@ class GameConfigDeck extends BaseDeck<string, { players: string[] }> {
             className='
               h-1/3 w-full
               flex flex-col items-center justify-start
-              font-providence text-lg
+              font-providence
             '
           >
             <label>{label}</label>
@@ -65,9 +70,10 @@ class GameConfigDeck extends BaseDeck<string, { players: string[] }> {
                 w-3/4
                 bg-transparent
                 border-b-2 border-gray-500 border-dashed
-                text-center text-md
+                text-center
               '
               onBlur={(e) => {
+                // TODO: move to onDiscard
                 this.setState(({ players }) => {
                   // insert/update player name when input loses focus
                   const newPlayers = [...players];
@@ -82,6 +88,30 @@ class GameConfigDeck extends BaseDeck<string, { players: string[] }> {
       </CardContainer>
     );
   }
+
+  protected override renderAdditional() {
+    const renderButton = this.state.players?.length >= minPlayerCount;
+
+    return (
+      <>
+        {renderButton && (
+          <button
+            className='
+              p-3
+              bg-[url("/images/linnen.svg")] bg-cover
+              rounded-lg
+            '
+            onClick={() => {
+              // TODO: pass players list
+              this.props.router.push("/play");
+            }}
+          >
+            Spel starten!
+          </button>
+        )}
+      </>
+    );
+  }
 }
 
-export default GameConfigDeck;
+export default withRouter(GameConfigDeck);

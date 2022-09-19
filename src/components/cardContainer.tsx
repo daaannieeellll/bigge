@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated, to as interpolate } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import { cardRatio, maxCardHeight, maxCardWidth } from "@/constants/cards";
@@ -36,6 +36,7 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
   // helper reference to get element positioning
   const ref = useRef<HTMLDivElement>(null);
   const [cardWidth, setCardWidth] = useState(0);
+  const cardHeight = useMemo(() => cardWidth / cardRatio.frac, [cardWidth]);
   const [centerY, setCenterY] = useState(0);
 
   const setCardProperties = () => {
@@ -46,8 +47,8 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
     if (parent)
       setCardWidth(
         maxCardWidth * parent.clientWidth >
-          ((maxCardHeight * cardRatio.x) / cardRatio.y) * parent.clientHeight
-          ? ((maxCardHeight * cardRatio.x) / cardRatio.y) * parent.clientHeight
+          maxCardHeight * cardRatio.frac * parent.clientHeight
+          ? maxCardHeight * cardRatio.frac * parent.clientHeight
           : maxCardWidth * parent.clientWidth
       );
   };
@@ -151,7 +152,7 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
       // add gesture handlers
       {...bind()}
       className='
-          absolute
+          col-start-1 row-start-1
 
           will-change-transform
           flex items-center justify-center
@@ -160,12 +161,15 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
           bg-[url("/images/linnen.svg")] bg-cover
           rounded-3xl
           shadow-2xl shadow-black
+
+          select-none
         '
       style={{
-        width: cardWidth,
-        aspectRatio: `${cardRatio.x} / ${cardRatio.y}`,
         x: props.x,
         y: props.y,
+        width: cardWidth,
+        height: cardHeight,
+        fontSize: cardWidth / 12,
         transform: interpolate([props.rot, props.scale], trans),
         opacity: interpolate([props.opacity], (opacity) => opacity),
       }}

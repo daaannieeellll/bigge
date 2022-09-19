@@ -1,6 +1,6 @@
 import GameConfigDeck from "@/components/gameConfigDeck";
 
-const Setup = () => {
+const GameConfig = () => {
   return (
     <div
       className='
@@ -15,4 +15,4 @@ const Setup = () => {
   );
 };
 
-export default Setup;
+export default GameConfig;

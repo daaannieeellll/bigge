@@ -6,12 +6,16 @@ interface IDeckState<T = any> {
 }
 
 abstract class BaseDeck<
-  T,
-  U extends { [key: string]: any } = { [key: string]: any }
-> extends Component<{ [key: string]: any }, IDeckState<T> & U> {
-  constructor(props: { [key: string]: any }) {
+  DeckContent,
+  ExtraStates extends { [key: string]: any } = { [key: string]: any },
+  Props extends { [key: string]: any } = { [key: string]: any }
+> extends Component<Props, IDeckState<DeckContent> & ExtraStates> {
+  constructor(props: Props) {
     super(props);
-    this.state = { deck: [] as T[], cardCount: 0 } as IDeckState<T> & U;
+    this.state = {
+      deck: [] as DeckContent[],
+      cardCount: 0,
+    } as IDeckState<DeckContent> & ExtraStates;
     this.initializeDeck = this.initializeDeck.bind(this);
     this.mapper = this.mapper.bind(this);
   }
@@ -23,9 +27,28 @@ abstract class BaseDeck<
   }
 
   // mapper is called for each element on the deck
-  protected abstract mapper(value: T, index: number, array: T[]): ReactNode;
+  protected abstract mapper(
+    value: DeckContent,
+    index: number,
+    array: DeckContent[]
+  ): ReactNode;
+
+  // render additional elements after deck
+  protected renderAdditional() {}
   render() {
-    return this.state.deck.map(this.mapper);
+    return (
+      <>
+        <div
+          className='
+            w-full h-full
+            grid justify-items-center items-center
+          '
+        >
+          {this.state.deck.map(this.mapper)}
+          {this.renderAdditional()}
+        </div>
+      </>
+    );
   }
 }
 
