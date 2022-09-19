@@ -1,2 +1,3 @@
 const maxDeckSize = 3;
-export default maxDeckSize;
+const minPlayerCount = 3;
+export { maxDeckSize, minPlayerCount };

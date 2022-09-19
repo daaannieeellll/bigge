@@ -30,7 +30,7 @@ const normalize = (dx: number, dy: number, dirX: number, dirY: number) => {
 
 interface ICardProps {
   children: ReactNode;
-  onDiscard?: () => void;
+  onDiscard?: (...args: any) => boolean;
 }
 const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
   // helper reference to get element positioning
@@ -93,7 +93,7 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
         // Active cards lift up a bit
         const scale = down ? 1.03 : 1;
 
-        // When a card is gone it flys out, otherwise goes back to zero
+        // When a card is gone it flies out, otherwise goes back to zero
         if (_discarded) {
           const [dx, dy] = normalize(mx, my, dirX, dirY);
           const x = window.innerWidth * dx * 2;
@@ -131,24 +131,26 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
       });
 
       if (!down && _discarded) {
-        setDiscarded(true);
-        if (discardHandler) {
-          discardHandler();
-        } else
+        // discardHandler returns false if the card should not be discarded
+        if (discardHandler && discardHandler()) {
+          setDiscarded(true);
+        } else {
           setTimeout(() => {
             _discarded = false;
             api.start(() => to());
-          }, 600);
+          }, 200);
+        }
       }
     }
   );
 
   return (
-    <>
-      <animated.div
-        ref={ref}
-        {...bind()}
-        className='
+    <animated.div
+      // use this reference to check if the card dimensions change
+      ref={ref}
+      // add gesture handlers
+      {...bind()}
+      className='
           absolute
 
           will-change-transform
@@ -159,19 +161,17 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
           rounded-3xl
           shadow-2xl shadow-black
         '
-        key={0}
-        style={{
-          width: cardWidth,
-          aspectRatio: `${cardRatio.x} / ${cardRatio.y}`,
-          x: props.x,
-          y: props.y,
-          transform: interpolate([props.rot, props.scale], trans),
-          opacity: interpolate([props.opacity], (opacity) => opacity),
-        }}
-      >
-        {children}
-      </animated.div>
-    </>
+      style={{
+        width: cardWidth,
+        aspectRatio: `${cardRatio.x} / ${cardRatio.y}`,
+        x: props.x,
+        y: props.y,
+        transform: interpolate([props.rot, props.scale], trans),
+        opacity: interpolate([props.opacity], (opacity) => opacity),
+      }}
+    >
+      {children}
+    </animated.div>
   );
 };
 
