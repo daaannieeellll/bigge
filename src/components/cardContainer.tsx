@@ -1,7 +1,8 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated, to as interpolate } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import { cardRatio, maxCardHeight, maxCardWidth } from "@/constants/cards";
+import type { MouseEvent, ReactNode } from "react";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = () => ({
@@ -30,9 +31,14 @@ const normalize = (dx: number, dy: number, dirX: number, dirY: number) => {
 
 interface ICardProps {
   children: ReactNode;
-  onDiscard?: (...args: any) => boolean;
+  onClick?: (e: MouseEvent<HTMLDivElement>) => void;
+  onDiscard?: () => boolean;
 }
-const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
+const CardContainer = ({
+  children,
+  onClick: clickHandler,
+  onDiscard: discardHandler,
+}: ICardProps) => {
   // helper reference to get element positioning
   const ref = useRef<HTMLDivElement>(null);
   const [cardWidth, setCardWidth] = useState(0);
@@ -147,6 +153,9 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
 
   return (
     <animated.div
+      onClick={(e) => {
+        if (clickHandler) clickHandler(e);
+      }}
       // use this reference to check if the card dimensions change
       ref={ref}
       // add gesture handlers

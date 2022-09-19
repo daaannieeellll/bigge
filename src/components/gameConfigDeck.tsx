@@ -37,6 +37,10 @@ class GameConfigDeck extends BaseDeck<
     return (
       <CardContainer
         key={this.state.cardCount - idx}
+        // focus input field on click
+        onClick={(e) =>
+          e.currentTarget.getElementsByTagName("input")[0].focus()
+        }
         onDiscard={() => {
           // check if player name contains at least three characters
           // otherwise deny discarding
@@ -74,7 +78,7 @@ class GameConfigDeck extends BaseDeck<
                 text-center
                 outline-none
               '
-              onBlur={(e) => {
+              onChange={(e) => {
                 this.setState(({ players }) => {
                   // insert/update player name when input loses focus
                   const newPlayers = [...players];
