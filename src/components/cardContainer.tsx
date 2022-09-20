@@ -1,8 +1,9 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated, to as interpolate } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import { cardRatio, maxCardHeight, maxCardWidth } from "@/constants/cards";
 import { clamp } from "@/utils/math";
+import type { MouseEvent, ReactNode } from "react";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = () => ({
@@ -31,12 +32,18 @@ const normalize = (dx: number, dy: number, dirX: number, dirY: number) => {
 
 interface ICardProps {
   children: ReactNode;
-  onDiscard?: () => void;
+  onClick?: (e: MouseEvent<HTMLDivElement>) => void;
+  onDiscard?: () => boolean;
 }
-const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
+const CardContainer = ({
+  children,
+  onClick: clickHandler,
+  onDiscard: discardHandler,
+}: ICardProps) => {
   // helper reference to get element positioning
   const ref = useRef<HTMLDivElement>(null);
   const [cardWidth, setCardWidth] = useState(0);
+  const cardHeight = useMemo(() => cardWidth / cardRatio.frac, [cardWidth]);
   const [centerY, setCenterY] = useState(0);
 
   const setCardProperties = () => {
@@ -47,8 +54,8 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
     if (parent)
       setCardWidth(
         maxCardWidth * parent.clientWidth >
-          ((maxCardHeight * cardRatio.x) / cardRatio.y) * parent.clientHeight
-          ? ((maxCardHeight * cardRatio.x) / cardRatio.y) * parent.clientHeight
+          maxCardHeight * cardRatio.frac * parent.clientHeight
+          ? maxCardHeight * cardRatio.frac * parent.clientHeight
           : maxCardWidth * parent.clientWidth
       );
   };
@@ -94,7 +101,7 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
         // Active cards lift up a bit
         const scale = down ? 1.03 : 1;
 
-        // When a card is gone it flys out, otherwise goes back to zero
+        // When a card is gone it flies out, otherwise goes back to zero
         if (_discarded) {
           const [dx, dy] = normalize(mx, my, dirX, dirY);
           const x = window.innerWidth * dx * 2;
@@ -136,25 +143,30 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
       });
 
       if (!down && _discarded) {
-        setDiscarded(true);
-        if (discardHandler) {
-          discardHandler();
-        } else
+        // discardHandler returns false if the card should not be discarded
+        if (discardHandler && discardHandler()) {
+          setDiscarded(true);
+        } else {
           setTimeout(() => {
             _discarded = false;
             api.start(() => to());
           }, 100);
+        }
       }
     }
   );
 
   return (
-    <>
-      <animated.div
-        ref={ref}
-        {...bind()}
-        className='
-          absolute
+    <animated.div
+      onClick={(e) => {
+        if (clickHandler) clickHandler(e);
+      }}
+      // use this reference to check if the card dimensions change
+      ref={ref}
+      // add gesture handlers
+      {...bind()}
+      className='
+          col-start-1 row-start-1
 
           will-change-transform
           flex items-center justify-center
@@ -163,20 +175,21 @@ const CardContainer = ({ children, onDiscard: discardHandler }: ICardProps) => {
           bg-[url("/images/linnen.svg")] bg-cover
           rounded-3xl
           shadow-2xl shadow-black
+
+          select-none
         '
-        key={0}
-        style={{
-          width: cardWidth,
-          aspectRatio: `${cardRatio.x} / ${cardRatio.y}`,
-          x: props.x,
-          y: props.y,
-          transform: interpolate([props.rot, props.scale], trans),
-          opacity: interpolate([props.opacity], (opacity) => opacity),
-        }}
-      >
-        {children}
-      </animated.div>
-    </>
+      style={{
+        x: props.x,
+        y: props.y,
+        width: cardWidth,
+        height: cardHeight,
+        fontSize: cardWidth / 12,
+        transform: interpolate([props.rot, props.scale], trans),
+        opacity: interpolate([props.opacity], (opacity) => opacity),
+      }}
+    >
+      {children}
+    </animated.div>
   );
 };
 

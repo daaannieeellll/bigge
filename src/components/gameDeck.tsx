@@ -2,7 +2,7 @@ import BaseDeck from "@/components/baseDeck";
 import CardContainer from "@/components/cardContainer";
 import CardData from "@/components/cardData";
 
-import maxDeckSize from "@/constants/gameConfig";
+import { maxDeckSize } from "@/constants/gameConfig";
 import { data } from "/data";
 
 import type { ICardDataProps } from "@/components/cardData";
@@ -12,14 +12,14 @@ interface IDeckProps {
   onNewTopCard?: (arg: TypeInfo) => void;
 }
 
-class GameDeck extends BaseDeck<ICardDataProps> {
-  newTopCardHandler?: (arg: TypeInfo) => void;
+class GameDeck extends BaseDeck<ICardDataProps, {}, IDeckProps> {
+  newTopCardHandler: (arg: TypeInfo) => void;
 
   constructor(props: IDeckProps) {
     super(props);
 
     this.addCard = this.addCard.bind(this);
-    this.newTopCardHandler = props.onNewTopCard;
+    this.newTopCardHandler = props.onNewTopCard ?? ((type: TypeInfo) => {});
   }
 
   override initializeDeck(): void {
@@ -32,18 +32,24 @@ class GameDeck extends BaseDeck<ICardDataProps> {
         text: data.cards[id][(Math.random() * data.cards[id].length) | 0],
       };
     });
-    this.setState({ deck: initialCards, cardNo: initialCards.length });
+    this.setState({ deck: initialCards, cardCount: initialCards.length });
   }
 
   mapper(card: ICardDataProps, idx: number) {
     // only call handler for top card
-    if (idx === 1 && this.newTopCardHandler)
+    if (idx === 1)
       this.newTopCardHandler({
-        color: data.meta.colors[card.id || 0],
+        color: data.meta.colors[card.id ?? 0],
       });
 
     return (
-      <CardContainer key={this.state.cardNo - idx} onDiscard={this.addCard}>
+      <CardContainer
+        key={this.state.cardCount - idx}
+        onDiscard={() => {
+          this.addCard();
+          return true;
+        }}
+      >
         <CardData type={card.type} text={card.text} />
       </CardContainer>
     );
@@ -56,13 +62,13 @@ class GameDeck extends BaseDeck<ICardDataProps> {
     const text = data.cards[id][(Math.random() * data.cards[id].length) | 0];
 
     // store card data
-    this.setState(({ deck: prevDeck, cardNo }) => {
+    this.setState(({ deck: prevDeck, cardCount }) => {
       const deck =
         prevDeck.length < maxDeckSize
           ? [{ id, type, text }, ...prevDeck]
           : [{ id, type, text }, ...prevDeck.slice(0, -1)];
 
-      return { deck, cardNo: cardNo + 1 };
+      return { deck, cardCount: cardCount + 1 };
     });
   }
 }
