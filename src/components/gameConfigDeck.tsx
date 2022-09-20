@@ -69,7 +69,6 @@ class GameConfigDeck extends BaseDeck<
             '
           >
             <label>{label}</label>
-            {/* TODO: focus input on tap/click card */}
             <input
               className='
                 w-3/4
