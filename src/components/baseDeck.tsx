@@ -1,4 +1,5 @@
-import { Component, ReactNode } from "react";
+import { GameContext } from "@/context/gameContext";
+import { Component, ContextType, ReactNode } from "react";
 
 interface IDeckState<T = any> {
   deck: T[];
@@ -10,6 +11,9 @@ abstract class BaseDeck<
   ExtraStates extends { [key: string]: any } = { [key: string]: any },
   Props extends { [key: string]: any } = { [key: string]: any }
 > extends Component<Props, IDeckState<DeckContent> & ExtraStates> {
+  static contextType = GameContext;
+  declare context: ContextType<typeof GameContext>;
+
   constructor(props: Props) {
     super(props);
     this.state = {

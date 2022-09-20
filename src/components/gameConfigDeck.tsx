@@ -122,8 +122,7 @@ class GameConfigDeck extends BaseDeck<
               transform: renderButton ? "scale(1)" : "scale(0)",
             }}
             onClick={() => {
-              // TODO: pass players list
-              // TODO: test if Link is an option
+              this.context?.updatePlayers(this.state.players);
               this.props.router.push("/play");
             }}
           >
