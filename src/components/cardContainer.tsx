@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSpring, animated, to as interpolate } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import { cardRatio, maxCardHeight, maxCardWidth } from "@/constants/cards";
+import { clamp } from "@/utils/math";
 import type { MouseEvent, ReactNode } from "react";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
@@ -105,7 +106,7 @@ const CardContainer = ({
           const [dx, dy] = normalize(mx, my, dirX, dirY);
           const x = window.innerWidth * dx * 2;
           const y = window.innerHeight * dy * 2;
-          const rot = fromUpperHalf * dirX * 90;
+          const rot = fromUpperHalf * dirX;
 
           return {
             x,
@@ -122,7 +123,11 @@ const CardContainer = ({
           const y = down ? my : 0;
 
           // How much the card tilts, flicking it harder makes it rotate faster
-          const rot = (fromUpperHalf * dirX * vx * Math.abs(offsetX)) / 10;
+          const rot = clamp(
+            fromUpperHalf * dirX * vx * Math.abs(offsetX) * 0.05,
+            -45,
+            45
+          );
 
           return {
             x,
@@ -131,7 +136,7 @@ const CardContainer = ({
             scale,
             config: {
               friction: 50,
-              tension: down ? 600 : 500,
+              tension: down ? 800 : 500,
             },
           };
         }
@@ -145,7 +150,7 @@ const CardContainer = ({
           setTimeout(() => {
             _discarded = false;
             api.start(() => to());
-          }, 200);
+          }, 100);
         }
       }
     }
