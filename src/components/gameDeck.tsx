@@ -12,14 +12,14 @@ interface IDeckProps {
   onNewTopCard?: (arg: TypeInfo) => void;
 }
 
-class GameDeck extends BaseDeck<ICardDataProps> {
-  newTopCardHandler?: (arg: TypeInfo) => void;
+class GameDeck extends BaseDeck<ICardDataProps, {}, IDeckProps> {
+  newTopCardHandler: (arg: TypeInfo) => void;
 
   constructor(props: IDeckProps) {
     super(props);
 
     this.addCard = this.addCard.bind(this);
-    this.newTopCardHandler = props.onNewTopCard;
+    this.newTopCardHandler = props.onNewTopCard ?? ((type: TypeInfo) => {});
   }
 
   override initializeDeck(): void {
@@ -37,7 +37,7 @@ class GameDeck extends BaseDeck<ICardDataProps> {
 
   mapper(card: ICardDataProps, idx: number) {
     // only call handler for top card
-    if (idx === 1 && this.newTopCardHandler)
+    if (idx === 1)
       this.newTopCardHandler({
         color: data.meta.colors[card.id ?? 0],
       });

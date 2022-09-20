@@ -1,18 +1,14 @@
-import { animated, useSpring } from "@react-spring/web";
 import GameDeck from "@/components/gameDeck";
-
-import type { TypeInfo } from "@/types/card";
+import { GameContext } from "@/context/gameContext";
+import { animated } from "@react-spring/web";
+import { useContext } from "react";
 
 const Play = () => {
-  // change background when a new card enters the top of the deck
-  const [props, api] = useSpring(() => ({ color: "#F98F8F" }));
-  const changeBackground = ({ color }: TypeInfo) => {
-    api.start(() => ({ color }));
-  };
+  const { backgroundColor, setBackgroundColor } = useContext(GameContext);
 
   return (
     <animated.div
-      style={{ backgroundColor: props.color }}
+      style={{ backgroundColor }}
       className='
         absolute w-full h-full
         overflow-hidden
@@ -20,7 +16,9 @@ const Play = () => {
         bg-[url("/images/bg.svg")] bg-80 bg-blend-multiply
         '
     >
-      <GameDeck onNewTopCard={changeBackground} />
+      <GameDeck
+        onNewTopCard={(type) => setBackgroundColor(type.color ?? "#F98F8F")}
+      />
     </animated.div>
   );
 };
