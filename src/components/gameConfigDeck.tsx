@@ -122,8 +122,8 @@ class GameConfigDeck extends BaseDeck<
               transform: renderButton ? "scale(1)" : "scale(0)",
             }}
             onClick={() => {
-              this.context?.updatePlayers(this.state.players);
-              this.props.router.push("/play");
+              this.context.updatePlayers(this.state.players);
+              this.context.startGame();
             }}
           >
             Spel starten!
