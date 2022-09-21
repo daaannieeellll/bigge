@@ -1,32 +1,23 @@
 import GameDeck from "@/components/gameDeck";
 import GameConfigDeck from "@/components/gameConfigDeck";
 import { GameContext } from "@/context/gameContext";
-import { animated } from "@react-spring/web";
 import { useContext } from "react";
+import GameLayout from "@/components/gameLayout";
 
-const Play = () => {
-  const { running, backgroundColor, setBackgroundColor } =
-    useContext(GameContext);
+import type { ReactElement } from "react";
+import type { NextPageWithLayout } from "@/types/app";
 
-  return (
-    <animated.div
-      style={{ backgroundColor }}
-      className='
-        absolute w-full h-full
-        overflow-hidden
-        flex items-center justify-center
-        bg-[url("/images/bg.svg")] bg-80 bg-blend-multiply
-        '
-    >
-      {running ? (
-        <GameDeck
-          onNewTopCard={(type) => setBackgroundColor(type.color ?? "#F98F8F")}
-        />
-      ) : (
-        <GameConfigDeck />
-      )}
-    </animated.div>
+const Play: NextPageWithLayout = () => {
+  const { running, setBackgroundColor } = useContext(GameContext);
+
+  return running ? (
+    <GameDeck
+      onNewTopCard={(type) => setBackgroundColor(type.color ?? "#F98F8F")}
+    />
+  ) : (
+    <GameConfigDeck />
   );
 };
+Play.getLayout = (page: ReactElement) => <GameLayout>{page}</GameLayout>;
 
 export default Play;

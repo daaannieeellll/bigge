@@ -1,15 +1,16 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
-import GameContextProvider from "@/context/gameContext";
 
-import type { AppProps } from "next/app";
+import type { AppPropsWithLayout } from "@/types/app";
 
-const MyApp = ({ Component, pageProps }: AppProps) => (
-  <SessionProvider session={pageProps.session}>
-    <GameContextProvider>
-      <Component {...pageProps} />
-    </GameContextProvider>
-  </SessionProvider>
-);
+const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
+  return (
+    <SessionProvider session={pageProps.session}>
+      {getLayout(<Component {...pageProps} />)}
+    </SessionProvider>
+  );
+};
 
 export default MyApp;
