@@ -38,7 +38,9 @@ abstract class BaseDeck<
   ): ReactNode;
 
   // render additional elements after deck
-  protected renderAdditional() {}
+  protected renderAdditional() {
+    // This function may be overridden
+  }
   render() {
     return (
       <>
