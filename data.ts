@@ -1,5 +1,6 @@
 export const data = {
   meta: {
+    amounts: [2, 5],
     types: [
       "Opdracht",
       "Stemrecht",
@@ -22,7 +23,7 @@ export const data = {
       "#F98F8F",
       "#9BE077",
     ],
-    probabilities: [30, 25, 20, 20, 20, 10, 10, 10, 10],
+    probabilities: [0.2, 0.16, 0.12, 0.12, 0.12, 0.07, 0.07, 0.07, 0.07],
   },
   cards: [
     // Opdracht
