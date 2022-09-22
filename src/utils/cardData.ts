@@ -1,18 +1,32 @@
-import { data } from "/data";
+import { ICardData } from "@/components/cardData";
 
-const getCardData = () => {
-  const id = (Math.random() * data.meta.types.length) | 0;
-  return {
-    id,
-    type: data.meta.types[id],
-    text: data.cards[id][(Math.random() * data.cards[id].length) | 0],
-  };
+const replaceAmountPlaceholders = (text: string, [first, second]: number[]) => {
+  while (text.includes("%a")) {
+    text = text.replace(
+      /(%a)(\d)/,
+      (m, p, q) =>
+        `${
+          (q === "0"
+            ? 1 + Math.random() * first
+            : 1 + first + Math.random() * second) | 0
+        }`
+    );
+  }
+  return text;
 };
 
-const getPlayerId = (nPlayers: number, id: number) => {
-  // get a random player from the players list
-  const playerId = (Math.random() * nPlayers) | 0;
-  return playerId;
+const replacePlayerPlaceholders = (
+  { id, text }: ICardData,
+  getPlayerFunc: (id: number) => string
+) => {
+  const chosenPlayers: string[] = [];
+  while (text.includes("%p")) {
+    const player = getPlayerFunc(id);
+    if (chosenPlayers.includes(player)) continue;
+    else chosenPlayers.push(player);
+    text = text.replace("%p", player);
+  }
+  return text;
 };
 
-export { getCardData, getPlayerId };
+export { replaceAmountPlaceholders, replacePlayerPlaceholders };

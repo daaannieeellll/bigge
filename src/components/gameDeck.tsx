@@ -7,7 +7,6 @@ import { data } from "/data";
 
 import type { ICardData } from "@/components/cardData";
 import type { TypeInfo } from "@/types/card";
-import { getCardData, getPlayerId } from "@/utils/cardData";
 
 interface IDeckProps {
   onNewTopCard?: (arg: TypeInfo) => void;
@@ -24,15 +23,9 @@ class GameDeck extends BaseDeck<ICardData, {}, IDeckProps> {
   }
 
   override initializeDeck(): void {
-    const initialCards = [...Array(maxDeckSize - 1)].map(() => {
-      const id = (Math.random() * data.meta.types.length) | 0;
-      const type = data.meta.types[id];
-      return {
-        id,
-        type,
-        text: data.cards[id][(Math.random() * data.cards[id].length) | 0],
-      };
-    });
+    const initialCards = [...Array(maxDeckSize - 1)].map(() =>
+      this.context.getCard()
+    );
     this.setState({ deck: initialCards, cardCount: initialCards.length });
   }
 
@@ -58,35 +51,7 @@ class GameDeck extends BaseDeck<ICardData, {}, IDeckProps> {
   }
 
   private addCard() {
-    const cardData = getCardData();
-    // replace placeholders
-    {
-      // amounts
-      while (cardData.text.includes("%a")) {
-        cardData.text = cardData.text.replace(
-          /(%a)(\d)/,
-
-          (m, p, q) => `${2 + ((Math.random() * (q === "0" ? 1 : 3)) | 0)}`
-        );
-      }
-    }
-    {
-      // player names
-      const chosenPlayers: number[] = [];
-      while (cardData.text.includes("%p")) {
-        // get 'random' player name (and store statistics)
-        const playerId = getPlayerId(this.context.players.length, cardData.id);
-        if (chosenPlayers.includes(playerId)) continue;
-        else chosenPlayers.push(playerId);
-
-        // replace %player% with player name
-        cardData.text = cardData.text.replace(
-          "%p",
-          this.context.players[playerId]
-        );
-      }
-    }
-
+    const cardData = this.context.getCard();
     this.setState(({ deck: prevDeck, cardCount }) => {
       const deck =
         prevDeck.length < maxDeckSize
