@@ -1,11 +1,10 @@
 import GameDeck from "@/components/gameDeck";
 import GameConfigDeck from "@/components/gameConfigDeck";
 import { GameContext } from "@/context/gameContext";
-import { useContext } from "react";
 import GameLayout from "@/components/gameLayout";
-
-import type { ReactElement } from "react";
+import { useContext } from "react";
 import type { NextPageWithLayout } from "@/types/app";
+import type { ReactElement } from "react";
 
 const Play: NextPageWithLayout = () => {
   const { running, setBackgroundColor } = useContext(GameContext);

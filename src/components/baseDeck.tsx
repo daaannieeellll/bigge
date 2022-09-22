@@ -1,5 +1,6 @@
 import { GameContext } from "@/context/gameContext";
-import { Component, ContextType, ReactNode } from "react";
+import { Component } from "react";
+import type { ContextType, ReactNode } from "react";
 
 interface IDeckState<T = any> {
   deck: T[];

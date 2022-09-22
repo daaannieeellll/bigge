@@ -1,4 +1,4 @@
-import { ICardData } from "@/components/cardData";
+import type { ICardData } from "@/components/cardData";
 
 const replaceAmountPlaceholders = (text: string, [first, second]: number[]) => {
   while (text.includes("%a")) {

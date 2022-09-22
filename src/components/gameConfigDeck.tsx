@@ -1,8 +1,9 @@
 import BaseDeck from "@/components/baseDeck";
 import CardContainer from "@/components/cardContainer";
 import { minPlayerCount } from "@/constants/gameConfig";
-import { withRouter, NextRouter } from "next/router";
+import { withRouter } from "next/router";
 import { ReactNode } from "react";
+import type { NextRouter } from "next/router";
 
 class GameConfigDeck extends BaseDeck<
   string,

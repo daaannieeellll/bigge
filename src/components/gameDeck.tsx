@@ -1,10 +1,8 @@
 import BaseDeck from "@/components/baseDeck";
 import CardContainer from "@/components/cardContainer";
 import CardData from "@/components/cardData";
-
 import { maxDeckSize } from "@/constants/gameConfig";
 import { data } from "/data";
-
 import type { ICardData } from "@/components/cardData";
 import type { TypeInfo } from "@/types/card";
 

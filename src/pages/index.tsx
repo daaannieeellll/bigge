@@ -1,9 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-
 import CardContainer from "@/components/cardContainer";
 import CardData from "@/components/cardData";
-
 import type { NextPage } from "next";
 
 const Home: NextPage = () => {

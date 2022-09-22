@@ -3,10 +3,10 @@ import {
   replacePlayerPlaceholders,
 } from "@/utils/cardData";
 import { SpringValue, useSpring } from "@react-spring/web";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, useState } from "react";
 import { data } from "/data";
-
 import type { ICardData } from "@/components/cardData";
+import type { ReactNode } from "react";
 
 type PList = {
   self: number;

@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
-
 import type { AppPropsWithLayout } from "@/types/app";
 
 const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
