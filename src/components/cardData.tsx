@@ -1,9 +1,9 @@
-export interface ICardDataProps {
-  id?: number;
+export interface ICardData {
+  id: number;
   type: string;
   text: string;
 }
-
+type ICardDataProps = Omit<ICardData, keyof { id: number }>;
 const CardData = ({ type, text }: ICardDataProps) => {
   return (
     <div

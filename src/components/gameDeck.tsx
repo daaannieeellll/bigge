@@ -5,14 +5,15 @@ import CardData from "@/components/cardData";
 import { maxDeckSize } from "@/constants/gameConfig";
 import { data } from "/data";
 
-import type { ICardDataProps } from "@/components/cardData";
+import type { ICardData } from "@/components/cardData";
 import type { TypeInfo } from "@/types/card";
+import { getCardData, getPlayerId } from "@/utils/cardData";
 
 interface IDeckProps {
   onNewTopCard?: (arg: TypeInfo) => void;
 }
 
-class GameDeck extends BaseDeck<ICardDataProps, {}, IDeckProps> {
+class GameDeck extends BaseDeck<ICardData, {}, IDeckProps> {
   newTopCardHandler: (arg: TypeInfo) => void;
 
   constructor(props: IDeckProps) {
@@ -35,10 +36,11 @@ class GameDeck extends BaseDeck<ICardDataProps, {}, IDeckProps> {
     this.setState({ deck: initialCards, cardCount: initialCards.length });
   }
 
-  mapper(card: ICardDataProps, idx: number) {
+  mapper(card: ICardData, idx: number) {
     // only call handler for top card
     if (idx === 1)
       this.newTopCardHandler({
+        id: card.id,
         color: data.meta.colors[card.id ?? 0],
       });
 
@@ -56,17 +58,40 @@ class GameDeck extends BaseDeck<ICardDataProps, {}, IDeckProps> {
   }
 
   private addCard() {
-    // get new card data
-    const id = (Math.random() * data.meta.types.length) | 0;
-    const type = data.meta.types[id];
-    const text = data.cards[id][(Math.random() * data.cards[id].length) | 0];
+    const cardData = getCardData();
+    // replace placeholders
+    {
+      // amounts
+      while (cardData.text.includes("%a")) {
+        cardData.text = cardData.text.replace(
+          /(%a)(\d)/,
 
-    // store card data
+          (m, p, q) => `${2 + ((Math.random() * (q === "0" ? 1 : 3)) | 0)}`
+        );
+      }
+    }
+    {
+      // player names
+      const chosenPlayers: number[] = [];
+      while (cardData.text.includes("%p")) {
+        // get 'random' player name (and store statistics)
+        const playerId = getPlayerId(this.context.players.length, cardData.id);
+        if (chosenPlayers.includes(playerId)) continue;
+        else chosenPlayers.push(playerId);
+
+        // replace %player% with player name
+        cardData.text = cardData.text.replace(
+          "%p",
+          this.context.players[playerId]
+        );
+      }
+    }
+
     this.setState(({ deck: prevDeck, cardCount }) => {
       const deck =
         prevDeck.length < maxDeckSize
-          ? [{ id, type, text }, ...prevDeck]
-          : [{ id, type, text }, ...prevDeck.slice(0, -1)];
+          ? [cardData, ...prevDeck]
+          : [cardData, ...prevDeck.slice(0, -1)];
 
       return { deck, cardCount: cardCount + 1 };
     });
