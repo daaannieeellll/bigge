@@ -5,6 +5,6 @@ import type { ReactElement, ReactNode } from "react";
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
-export type AppPropsWithLayout = AppProps & {
+export type AppPropsWithLayout<P = {}> = AppProps<P> & {
   Component: NextPageWithLayout;
 };
