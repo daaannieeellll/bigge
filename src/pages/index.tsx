@@ -10,7 +10,8 @@ const Home: NextPage = () => {
     <div className='flex min-h-screen flex-col items-center justify-center py-2'>
       <Head>
         <title>Bigge!</title>
-        <link rel='icon' href='/icon.png' />
+        <link rel='icon' href='/images/icon.png' />
+        <link rel='manifest' href='/manifest.json' />
       </Head>
 
       <main
