@@ -1,6 +1,7 @@
 {
   "name": "Bigge!",
   "short_name": "Bigge!",
+  "description": "Bigge! is het leukste drankspelletje om de avond mee te beginnen of te eindigen!",
   "lang": "nl-NL",
   "start_url": "/",
   "display": "standalone",
