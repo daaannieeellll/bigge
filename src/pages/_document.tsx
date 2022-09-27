@@ -8,10 +8,10 @@ export default function Document() {
           name='description'
           content='Bigge! is het leukste drankspelletje om de avond mee te beginnen of te eindigen!'
         />
-
+        <link rel='manifest' href='/bigge.webmanifest' />
+        <link rel='icon' href='/images/icons/72x72.png' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <meta name='theme-color' content='#F98F8F' />
-        <link rel='icon' href='/images/icons/72x72.png' />
 
         {/* Apple specific tags */}
         <meta name='apple-mobile-web-app-capable' content='yes' />
