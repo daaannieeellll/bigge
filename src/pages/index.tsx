@@ -1,10 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import GameLayout from "@/components/gameLayout";
 import CardContainer from "@/components/cardContainer";
 import CardData from "@/components/cardData";
-import type { NextPage } from "next";
+import type { NextPageWithLayout } from "@/types/app";
+import type { ReactElement } from "react";
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   const router = useRouter();
   return (
     <div className='flex min-h-screen flex-col items-center justify-center py-2'>
@@ -38,5 +40,6 @@ const Home: NextPage = () => {
     </div>
   );
 };
+Home.getLayout = (page: ReactElement) => <GameLayout>{page}</GameLayout>;
 
 export default Home;

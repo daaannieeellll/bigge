@@ -15,7 +15,7 @@ module.exports = {
         80: "80vh",
       },
       fontFamily: {
-        sans: ["Oswald"],
+        oswald: ["Oswald"],
         providence: ["Providence"],
       },
     },
