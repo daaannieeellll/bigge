@@ -17,8 +17,6 @@ import {
   cleanupOutdatedCaches,
 } from "workbox-precaching";
 
-console.log("Service worker is running!");
-
 skipWaiting();
 clientsClaim();
 
@@ -169,10 +167,6 @@ registerRoute(
 
 // Use a stale-while-revalidate strategy for all other requests.
 setDefaultHandler(new StaleWhileRevalidate());
-setDefaultHandler(({ event }) => {
-  console.log("SW: DefaultHandler", event);
-  return new StaleWhileRevalidate();
-});
 
 // This "catch" handler is triggered when any of the other routes fail to
 // generate a response.
