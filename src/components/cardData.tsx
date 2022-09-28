@@ -16,7 +16,7 @@ const CardData = ({ type, text }: ICardDataProps) => {
         <img src={`/images/types/${type}.svg`} alt={type} />
       </div>
       <div className='text-[2vh] text-center w-4/5 h-1/2 select-none'>
-        <p>{text}</p>
+        <p className='font-oswald'>{text}</p>
       </div>
     </div>
   );
