@@ -1,9 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import GameLayout from "@/components/gameLayout";
 import CardContainer from "@/components/cardContainer";
 import CardData from "@/components/cardData";
+import type { NextPageWithLayout } from "@/types/app";
+import type { ReactElement } from "react";
 
-const Offline = () => {
+const Offline: NextPageWithLayout = () => {
   const router = useRouter();
   return (
     <div className='flex min-h-screen flex-col items-center justify-center py-2'>
@@ -39,5 +42,6 @@ const Offline = () => {
     </div>
   );
 };
+Offline.getLayout = (page: ReactElement) => <GameLayout>{page}</GameLayout>;
 
 export default Offline;
