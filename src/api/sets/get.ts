@@ -2,7 +2,7 @@ import { readSet } from "@/utils/firestore/crud";
 import type { ApiError } from "@/types/errors";
 
 const getSets = async (id: string) =>
-  readSet(id)
+  await readSet(id)
     .then((doc) => {
       if (!doc.exists)
         throw { statusCode: 404, message: "Set not found" } as ApiError;
