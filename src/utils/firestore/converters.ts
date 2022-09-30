@@ -1,14 +1,14 @@
-import type { Cards, UserSet } from "@/types/firestore/data";
 import type {
   DocumentData,
   QueryDocumentSnapshot,
 } from "firebase-admin/firestore";
+import type { Cards, Set } from "@/types/firestore/data";
 
-const userSetConverter = {
-  toFirestore(userSet: UserSet): DocumentData {
-    return { ...userSet };
+const setConverter = {
+  toFirestore(set: Set): DocumentData {
+    return { ...set };
   },
-  fromFirestore(snapshot: QueryDocumentSnapshot): UserSet {
+  fromFirestore(snapshot: QueryDocumentSnapshot): Set {
     const data = snapshot.data();
     return {
       name: data.name,
@@ -19,7 +19,7 @@ const userSetConverter = {
       probabilities: data.probabilities,
       colors: data.colors,
       cards: data.cards,
-    } as UserSet;
+    } as Set;
   },
 };
 
@@ -36,4 +36,4 @@ const cardsConverter = {
   },
 };
 
-export { userSetConverter, cardsConverter };
+export { setConverter, cardsConverter };

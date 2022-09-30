@@ -1,74 +1,42 @@
 import { firestore } from "@/services/firebase/admin";
-import { cardsConverter, userSetConverter } from "./converters";
-import type { UserSet } from "@/types/firestore/data";
+import { cardsConverter, setConverter } from "./converters";
+import type { Set } from "@/types/firestore/data";
 
 /* CREATE */
-const createUserSet = async (data: UserSet, id?: string) => {
-  if (id)
-    return await firestore
-      .collection("sets")
-      .doc(id)
-      .withConverter(userSetConverter)
-      .set(data);
-  else
-    return await firestore
-      .collection("sets")
-      .withConverter(userSetConverter)
-      .add(data);
-};
-const createCards = async (data: string[][], id: string) => {
-  return await firestore
-    .collection("cards")
-    .doc(id)
-    .withConverter(cardsConverter)
-    .set(data);
-};
+const createSet = async (data: Set, id?: string) =>
+  id
+    ? firestore.collection("sets").doc(id).withConverter(setConverter).set(data)
+    : firestore.collection("sets").withConverter(setConverter).add(data);
+const createCards = async (data: string[][], id: string) =>
+  firestore.collection("cards").doc(id).withConverter(cardsConverter).set(data);
 
 /* READ */
-const readUserSet = async (id: string) => {
-  const setSnapshot = await firestore
-    .collection("sets")
-    .doc(id)
-    .withConverter<UserSet>(userSetConverter)
-    .get();
-  return setSnapshot.data();
-};
-const readCards = async (id: string) => {
-  const cardsSnapshot = await firestore
+const readSet = async (id: string) =>
+  firestore.collection("sets").doc(id).withConverter<Set>(setConverter).get();
+const readCards = async (id: string) =>
+  firestore
     .collection("cards")
     .doc(id)
     .withConverter<string[][]>(cardsConverter)
     .get();
-  return cardsSnapshot.data();
-};
 
 /* UPDATE */
-const updateUserSet = async <K extends keyof UserSet>(
+const updateSet = async <K extends keyof Set>(
   id: string,
-  data: Pick<UserSet, K> | UserSet
-) => {
-  return await firestore
-    .doc(`sets/${id}`)
-    .withConverter(userSetConverter)
-    .update(data);
-};
-const updateCards = async (id: string, data: string[][]) => {
-  return createCards(data, id);
-};
+  data: Set | Pick<Set, K>
+) => firestore.doc(`sets/${id}`).withConverter(setConverter).update(data);
+const updateCards = async (id: string, data: string[][]) =>
+  createCards(data, id);
 
 /* DELETE */
-const deleteUserSet = async (id: string) => {
-  return await firestore.doc(`sets/${id}`).delete();
-};
-const deleteCards = async (id: string) => {
-  return await firestore.doc(`cards/${id}`).delete();
-};
+const deleteSet = async (id: string) => firestore.doc(`sets/${id}`).delete();
+const deleteCards = async (id: string) => firestore.doc(`cards/${id}`).delete();
 
 export {
-  createUserSet,
-  readUserSet,
-  updateUserSet,
-  deleteUserSet,
+  createSet,
+  readSet,
+  updateSet,
+  deleteSet,
   createCards,
   readCards,
   updateCards,

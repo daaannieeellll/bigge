@@ -1,4 +1,4 @@
-const validateUserSet = ({ name, types, probabilities, colors }: any) =>
+const validateSet = ({ name, types, probabilities, colors }: any) =>
   typeof name === "string" &&
   Array.isArray(types) &&
   Array.isArray(probabilities) &&
@@ -7,7 +7,7 @@ const validateUserSet = ({ name, types, probabilities, colors }: any) =>
   probabilities.every((p: any) => typeof p === "number") &&
   colors.every((c: any) => typeof c === "string");
 
-const validateUserSetSubset = ({ name, types, probabilities, colors }: any) => {
+const validateSubSet = ({ name, types, probabilities, colors }: any) => {
   if (
     typeof name === "undefined" &&
     typeof types === "undefined" &&
@@ -34,4 +34,4 @@ const removeUndefined = (obj: any) => {
   return obj;
 };
 
-export { validateUserSet, validateUserSetSubset, removeUndefined };
+export { validateSet, validateSubSet, removeUndefined };

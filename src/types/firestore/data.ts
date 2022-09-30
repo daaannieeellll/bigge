@@ -1,6 +1,6 @@
 import type { DocumentReference, Timestamp } from "firebase-admin/firestore";
 
-export interface UserSet {
+export interface Set {
   name: string;
   owner: DocumentReference;
   saves: number;
