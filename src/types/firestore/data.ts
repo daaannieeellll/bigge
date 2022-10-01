@@ -2,13 +2,16 @@ import type { DocumentReference, Timestamp } from "firebase-admin/firestore";
 
 export interface Set {
   name: string;
-  owner: DocumentReference;
-  saves: number;
-  created: Timestamp;
   types: string[];
   probabilities: number[];
   colors: string[];
-  cards: DocumentReference;
+  saves: number;
+  created: Timestamp;
+  ownerRef: DocumentReference;
+  cardsRef: DocumentReference<string[][]>;
+  // populated fields
+  owner?: string;
+  cards?: string[][];
 }
 
 export type Cards = { data: string[] }[];

@@ -4,11 +4,17 @@ import type {
 } from "firebase-admin/firestore";
 import type { Cards, Set } from "@/types/firestore/data";
 
-const setConverter = {
-  toFirestore(set: Set): DocumentData {
-    return { ...set };
+interface Converter<T> {
+  toFirestore: (data: T) => DocumentData;
+  fromFirestore: (snapshot: QueryDocumentSnapshot) => T;
+}
+
+const setConverter: Converter<Set> = {
+  toFirestore(set): DocumentData {
+    const { cards, owner, ...data } = set;
+    return data;
   },
-  fromFirestore(snapshot: QueryDocumentSnapshot): Set {
+  fromFirestore(snapshot: QueryDocumentSnapshot) {
     const data = snapshot.data();
     return {
       name: data.name,
@@ -18,19 +24,19 @@ const setConverter = {
       types: data.types,
       probabilities: data.probabilities,
       colors: data.colors,
-      cards: data.cards,
+      cardsRef: data.cardsRef,
     } as Set;
   },
 };
 
-const cardsConverter = {
-  toFirestore(cards: string[][]): DocumentData {
+const cardsConverter: Converter<string[][]> = {
+  toFirestore(cards): DocumentData {
     const converted: Cards = cards.map((cardData) => ({
       data: cardData,
     }));
     return { data: converted };
   },
-  fromFirestore(snapshot: QueryDocumentSnapshot): string[][] {
+  fromFirestore(snapshot: QueryDocumentSnapshot) {
     const { data } = snapshot.data() as { data: Cards };
     return data.map((card) => card.data);
   },

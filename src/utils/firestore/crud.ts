@@ -7,8 +7,8 @@ const createSet = async (data: Set, id?: string) =>
   id
     ? firestore.collection("sets").doc(id).withConverter(setConverter).set(data)
     : firestore.collection("sets").withConverter(setConverter).add(data);
-const createCards = async (data: string[][], id: string) =>
-  firestore.collection("cards").doc(id).withConverter(cardsConverter).set(data);
+const createCards = async (data: string[][]) =>
+  firestore.collection("cards").withConverter(cardsConverter).add(data);
 
 /* READ */
 const readSet = async (id: string) =>
@@ -26,7 +26,7 @@ const updateSet = async <K extends keyof Set>(
   data: Set | Pick<Set, K>
 ) => firestore.doc(`sets/${id}`).withConverter(setConverter).update(data);
 const updateCards = async (id: string, data: string[][]) =>
-  createCards(data, id);
+  firestore.collection("cards").withConverter(cardsConverter).doc(id).set(data);
 
 /* DELETE */
 const deleteSet = async (id: string) => firestore.doc(`sets/${id}`).delete();

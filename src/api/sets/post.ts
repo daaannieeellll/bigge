@@ -1,23 +1,29 @@
 import { Timestamp } from "firebase-admin/firestore";
 import { firestore } from "@/services/firebase/admin";
-import { createSet } from "@/utils/firestore/crud";
-import { validateSet } from "@/utils/firestore/validators";
+import { createSet, createCards } from "@/utils/firestore/crud";
+import { validateCards, validateSet } from "@/utils/firestore/validators";
 import type { ApiError } from "@/types/errors";
 import type { Set } from "@/types/firestore/data";
 
 const postSets = async (data: any, id?: string) => {
   if (!validateSet(data))
     throw { statusCode: 400, message: "Invalid set data" } as ApiError;
+  if (!validateCards(data))
+    throw { statusCode: 400, message: "Invalid card data" } as ApiError;
+
+  const cardsRef = await createCards(data.cards as string[][]).catch(() => {
+    throw { statusCode: 400, message: "Could not create cards" } as ApiError;
+  });
 
   const set: Set = {
     name: data.name,
-    owner: firestore.doc("users/bigge"),
+    ownerRef: firestore.doc("users/bigge"),
     saves: 0,
     created: Timestamp.now(),
     types: data.types,
     probabilities: data.probabilities,
     colors: data.colors,
-    cards: firestore.doc(`cards/${id}`),
+    cardsRef,
   };
 
   await createSet(set, id).catch(() => {
