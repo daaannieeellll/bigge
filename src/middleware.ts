@@ -19,3 +19,8 @@ const groups = {
   authenticated: ["/middlewareprotected"],
   public: ["/"],
 };
+
+// Exclude all api routes from middleware
+export const config = {
+  matcher: ["/((?!v1.0/).*)"],
+};
