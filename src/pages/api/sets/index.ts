@@ -6,8 +6,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let statusCode = 200;
   let responseData;
   try {
-    if (req.method === "POST") await postSets(req.body);
-    else statusCode = 405;
+    if (req.method === "POST") {
+      await postSets(req.body);
+      statusCode = 201;
+    } else statusCode = 405;
   } catch (e) {
     const error = e as ApiError;
     statusCode = error.statusCode;
