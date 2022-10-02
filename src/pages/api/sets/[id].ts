@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (typeof id !== "string") {
       statusCode = 400;
     } else if (req.method === "GET") {
-      responseData = await getSets(id, includeCards === "yes");
+      responseData = await getSets(id, includeCards);
     } else if (req.method === "POST") {
       await postSets(req.body, id);
       statusCode = 201;

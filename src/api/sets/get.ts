@@ -2,7 +2,7 @@ import { readSet } from "@/utils/firestore/crud";
 import { cardsConverter } from "@/utils/firestore/converters";
 import type { ApiError } from "@/types/errors";
 
-const getSets = async (id: string, includeCards: boolean) =>
+const getSets = async (id: string, includeCards?: string | string[]) =>
   await readSet(id)
     .then(async (doc) => {
       const data = doc.data();
