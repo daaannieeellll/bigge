@@ -24,9 +24,16 @@ const readCards = async (id: string) =>
 const updateSet = async <K extends keyof Set>(
   id: string,
   data: Set | Pick<Set, K>
-) => firestore.doc(`sets/${id}`).withConverter(setConverter).update(data);
-const updateCards = async (id: string, data: string[][]) =>
-  firestore.collection("cards").withConverter(cardsConverter).doc(id).set(data);
+) => {
+  const doc = firestore.collection("sets").doc(id);
+  const set = await doc.get();
+  return set.exists ? doc.withConverter(setConverter).update(data) : null;
+};
+const updateCards = async (id: string, data: string[][]) => {
+  const doc = firestore.collection("cards").doc(id);
+  const cards = await doc.get();
+  return cards.exists ? doc.withConverter(cardsConverter).set(data) : null;
+};
 
 /* DELETE */
 const deleteSet = async (id: string) => firestore.doc(`sets/${id}`).delete();
