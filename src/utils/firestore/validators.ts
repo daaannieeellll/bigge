@@ -8,10 +8,8 @@ const validateSet = ({ name, types, probabilities, colors, cards }: any) =>
   Array.isArray(types) &&
   Array.isArray(probabilities) &&
   Array.isArray(colors) &&
-  Array.isArray(cards) &&
   types.length === probabilities.length &&
   types.length === colors.length &&
-  types.length === cards.length &&
   types.every((t) => typeof t === "string") &&
   probabilities.every((p) => typeof p === "number") &&
   colors.every((c) => typeof c === "string") &&
@@ -40,7 +38,7 @@ const validateSubSet = ({ name, types, probabilities, colors }: any) => {
 };
 
 const validateCards = (data: any) => {
-  const { cards, types } = data;
+  const { cards } = data;
 
   // Check if cards is an array of string arrays
   if (!Array.isArray(cards)) return false;
@@ -48,7 +46,6 @@ const validateCards = (data: any) => {
     if (!Array.isArray(type)) return false;
     for (let card of type) if (typeof card !== "string") return false;
   }
-  if (cards.length !== types.length) return false;
 
   return true;
 };
