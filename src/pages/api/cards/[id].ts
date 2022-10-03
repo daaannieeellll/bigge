@@ -1,6 +1,7 @@
 import { getCards } from "@/api/cards/get";
 import { putCards } from "@/api/cards/put";
 import { deleteCards } from "@/api/cards/delete";
+import { userAuthenticated } from "@/utils/auth/jwt";
 import type { ApiError } from "@/types/errors";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -12,6 +13,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id } = req.query;
     if (typeof id !== "string") {
       statusCode = 400;
+    } else if (!(await userAuthenticated(req))) {
+      statusCode = 403;
     } else if (req.method === "GET") {
       responseData = await getCards(id);
     } else if (req.method === "PUT") {

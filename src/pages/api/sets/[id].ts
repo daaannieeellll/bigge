@@ -2,6 +2,7 @@ import { getSets } from "@/api/sets/get";
 import { postSets } from "@/api/sets/post";
 import { putSets } from "@/api/sets/put";
 import { deleteSets } from "@/api/sets/delete";
+import { userAuthenticated } from "@/utils/auth/jwt";
 import type { ApiError } from "@/types/errors";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -13,6 +14,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id, includeCards } = req.query;
     if (typeof id !== "string") {
       statusCode = 400;
+    } else if (!(await userAuthenticated(req))) {
+      statusCode = 403;
     } else if (req.method === "GET") {
       responseData = await getSets(id, includeCards);
     } else if (req.method === "POST") {
