@@ -22,5 +22,5 @@ const groups = {
 
 // Exclude all api routes from middleware
 export const config = {
-  matcher: ["/((?!v1.0/).*)"],
+  matcher: ["/((?!v1/).*)"],
 };
