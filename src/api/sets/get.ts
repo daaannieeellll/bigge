@@ -13,8 +13,8 @@ const getSets = async (id: string, includeCards?: string | string[]) =>
         const cards = await (
           await cardsRef.withConverter(cardsConverter).get()
         )?.data();
-        return { ...relevantData, cards };
-      } else return relevantData;
+        return { ...relevantData, cardsId: cardsRef.id, cards };
+      } else return { ...relevantData, cardsId: cardsRef.id };
     })
     .catch(() => {
       throw { statusCode: 400, message: "Could not get set" } as ApiError;
