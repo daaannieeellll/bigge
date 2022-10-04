@@ -5,7 +5,7 @@ import { routes } from "./constants/auth/routes";
 import type { NextRequest } from "next/server";
 
 const pathInGroup = (request: NextRequest, group: string[]) =>
-  group.indexOf(request.nextUrl.pathname) !== -1;
+  group.find((path) => request.nextUrl.pathname.startsWith(path));
 
 export async function middleware(req: NextRequest) {
   if (pathInGroup(req, groups.authenticated))
@@ -16,7 +16,7 @@ export async function middleware(req: NextRequest) {
 }
 
 const groups = {
-  authenticated: ["/middlewareprotected"],
+  authenticated: ["/admin"],
   public: ["/"],
 };
 
