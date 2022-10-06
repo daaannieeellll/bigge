@@ -27,15 +27,15 @@ const JSONEditor = ({ files, className }: IJSONEditorProps) => {
 
   const [currentFile, setCurrentFile] = useState(0);
   // Editor file info
-  const [errors, setErrors] = useState<string[][]>([
-    ...Array(files.length).fill([]),
-  ]);
-  const [isValidJson, setIsValidJson] = useState<boolean[]>([
-    ...Array(files.length).fill(true),
-  ]);
-  const [isEdited, setIsEdited] = useState<boolean[]>([
-    ...Array(files.length).fill(false),
-  ]);
+  const [errors, setErrors] = useState<string[][]>(
+    Array(files.length).fill([])
+  );
+  const [isValidJson, setIsValidJson] = useState<boolean[]>(
+    Array(files.length).fill(true)
+  );
+  const [isEdited, setIsEdited] = useState<boolean[]>(
+    Array(files.length).fill(false)
+  );
 
   const updateEditorLayout = useCallback(() => {
     const editor: any = editorRef.current;
