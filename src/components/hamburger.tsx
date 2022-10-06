@@ -10,7 +10,7 @@ const Hamburger = ({ active, onClick, className }: Props) => {
         className={`
           relative flex h-[50px] w-[50px]
             items-center justify-center overflow-hidden
-          rounded-full bg-slate-700 shadow-md
+          rounded-full bg-neutral-600 shadow-md
           ring-gray-300 ring-opacity-30 hover:ring-8
           transform transition-all duration-200
           ${active ? "ring-4" : "ring-0"}

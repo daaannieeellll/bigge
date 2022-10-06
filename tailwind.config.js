@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        "neutral-850": "#1E1E1E",
+      },
       backgroundImage: {
         "big-pattern": url("/img/bg.svg"),
       },

@@ -1,5 +1,6 @@
 import Hamburger from "@/components/hamburger";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
+import type { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -18,7 +19,8 @@ const Navigation = ({ children }: Props) => {
         className={`
           fixed w-screen h-screen z-10
           flex flex-col items-center justify-center
-          bg-white/70
+          bg-white/70 dark:bg-neutral-900/70
+          dark:text-white
           transition-all duration-700 ease-in-out
           ${visible ? "translate-x-0" : "translate-x-full"}
           ${visible ? "opacity-100" : "opacity-0"}
