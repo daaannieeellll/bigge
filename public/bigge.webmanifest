@@ -43,6 +43,28 @@
   "lang": "nl-NL",
   "orientation": "portrait",
   "description": "Bigge! is het leukste drankspelletje om de avond mee te beginnen of te eindigen!",
+  "screenshots": [
+    {
+      "src": "./images/screenshots/welcome-screen.png",
+      "sizes": "1442x3203",
+      "type": "image/png"
+    },
+    {
+      "src": "./images/screenshots/opdracht-example.png",
+      "sizes": "1442x3203",
+      "type": "image/png"
+    },
+    {
+      "src": "./images/screenshots/big-example.png",
+      "sizes": "1442x3203",
+      "type": "image/png"
+    },
+    {
+      "src": "./images/screenshots/mlt-example.png",
+      "sizes": "1442x3203",
+      "type": "image/png"
+    }
+  ],
   "categories": [
     "games"
   ]
