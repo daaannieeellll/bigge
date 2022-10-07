@@ -15,7 +15,7 @@ const postSets = async (data: any, id?: string) => {
     throw { statusCode: 400, message: "Could not create cards" } as ApiError;
   });
 
-  const set: Set = {
+  const set = {
     name: data.name,
     ownerRef: firestore.doc("users/bigge"),
     saves: 0,
@@ -26,7 +26,7 @@ const postSets = async (data: any, id?: string) => {
     cardsRef,
   };
 
-  await createSet(set, id).catch(() => {
+  await createSet(set as Set, id).catch(() => {
     throw { statusCode: 400, message: "Could not create set" } as ApiError;
   });
 };
