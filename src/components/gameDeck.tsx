@@ -2,7 +2,6 @@ import BaseDeck from "@/components/baseDeck";
 import CardContainer from "@/components/cardContainer";
 import CardData from "@/components/cardData";
 import { maxDeckSize } from "@/constants/gameConfig";
-import { data } from "/data";
 import type { ICardData } from "@/components/cardData";
 import type { TypeInfo } from "@/types/card";
 
@@ -32,7 +31,7 @@ class GameDeck extends BaseDeck<ICardData, {}, IDeckProps> {
     if (idx === 1)
       this.newTopCardHandler({
         id: card.id,
-        color: data.meta.colors[card.id ?? 0],
+        color: this.context.cardSet.colors[card.id ?? 0],
       });
 
     return (

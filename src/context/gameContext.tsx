@@ -1,22 +1,25 @@
+import { SpringValue, useSpring } from "@react-spring/web";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   replaceAmountPlaceholders,
   replacePlayerPlaceholders,
 } from "@/utils/cardData";
-import { SpringValue, useSpring } from "@react-spring/web";
-import { createContext, useState } from "react";
-import { data } from "/data";
+import { callApi } from "@/utils/firestore/client";
+import { Set } from "@/types/firestore/data";
 import type { ICardData } from "@/components/cardData";
 import type { ReactNode } from "react";
-
-type PList = {
-  self: number;
-  player: number[];
-}[];
 
 export interface IGameContext {
   running: boolean;
   startGame: () => void;
   stopGame: () => void;
+  cardSet: Set;
   backgroundColor: SpringValue<string>;
   setBackgroundColor: (color: string) => void;
   players: string[];
@@ -29,82 +32,101 @@ export const GameContext = createContext<IGameContext>({} as IGameContext);
 const GameContextProvider = ({ children }: { children: ReactNode }) => {
   // get/set game state
   const [running, setRunning] = useState(false);
-  const startGame = () => setRunning(true);
-  const stopGame = () => setRunning(false);
+  const startGame = useCallback(() => setRunning(true), []);
+  const stopGame = useCallback(() => setRunning(false), []);
+
+  const [cardSet, setCardSet] = useState<Set>({
+    types: [""],
+    probabilities: [0],
+    colors: [""],
+    cards: [[""]],
+  } as Set);
+
+  useEffect(() => {
+    callApi("GET", "sets", "bigge", undefined, { includeCards: "yes" })
+      .then((response) => response.json() as Promise<Set>)
+      .then((set) => {
+        setCardSet(set);
+      });
+  }, []);
 
   // get/set background color
-  const [props, api] = useSpring(() => ({ color: "#F98F8F" }));
-  const setBackgroundColor = (color: string) => {
-    api.start(() => ({ color }));
-  };
+  const [springProps, springApi] = useSpring(() => ({ color: "#F98F8F" }));
+  const setBackgroundColor = useCallback(
+    (color: string) => springApi.start(() => ({ color })),
+    [springApi]
+  );
 
   // get/set players
   const [players, setPlayers] = useState<string[]>([]);
-  const updatePlayers = (newPlayers: string[]) => {
+  const updatePlayers = useCallback((newPlayers: string[]) => {
     setPlayers(newPlayers);
-    setProbabilities(
-      [...Array(data.meta.types.length)].map((_, i) => ({
-        self: data.meta.probabilities[i],
-        player: Array(newPlayers.length).fill(1 / newPlayers.length),
-      }))
-    );
-  };
+  }, []);
 
   // card probabilities
-  const [probabilities, setProbabilities] = useState<PList>([]);
-  const [playedCards, setPlayedCards] = useState<number[][]>(
-    Array(data.meta.types.length).fill([])
+  const getPlayerName = useCallback(
+    () => players[(Math.random() * players.length) | 0],
+    [players]
   );
-  const getPlayerName = (type: number) => {
-    let r = Math.random();
-    let i = 0;
-    for (; i < players.length; ++i) {
-      if (r < probabilities[type].player[i]) break;
-      else r -= probabilities[type].player[i];
-    }
-    return players[i];
-  };
-  const getCardType = () => {
+  const getCardType = useCallback(() => {
     let r = Math.random();
     let type = 0;
-    for (; type < data.meta.types.length; ++type) {
-      if (r < probabilities[type].self) break;
-      else r -= probabilities[type].self;
+    for (; type < cardSet.types.length; ++type) {
+      if (r < cardSet.probabilities[type]) break;
+      else r -= cardSet.probabilities[type];
     }
     return type;
-  };
-  const getCardText = (type: number) => {
-    let id = (Math.random() * data.cards[type].length) | 0;
-    if (data.cards[type].length > 1)
-      while (playedCards[type].includes(id))
-        id = (Math.random() * data.cards[type].length) | 0;
-    return data.cards[type][id];
-  };
-  const replacePlaceholders = (cardData: ICardData) => {
-    cardData.text = replaceAmountPlaceholders(cardData.text, data.meta.amounts);
-    cardData.text = replacePlayerPlaceholders(cardData, getPlayerName);
-    return cardData;
-  };
-  const getCard = (): ICardData => {
+  }, [cardSet]);
+  const getCardText = useCallback(
+    (type: number) => {
+      let id = (Math.random() * cardSet.cards[type].length) | 0;
+      if (cardSet.cards[type].length > 1)
+        id = (Math.random() * cardSet.cards[type].length) | 0;
+      return cardSet.cards[type][id];
+    },
+    [cardSet]
+  );
+  const replacePlaceholders = useCallback(
+    (cardData: ICardData) => {
+      cardData.text = replaceAmountPlaceholders(cardData.text, [2, 5]);
+      cardData.text = replacePlayerPlaceholders(cardData, getPlayerName);
+      return cardData;
+    },
+    [getPlayerName]
+  );
+  const getCard = useCallback((): ICardData => {
     const id = getCardType();
-    const type = data.meta.types[id];
+    const type = cardSet.types[id];
     const text = getCardText(id);
     return replacePlaceholders({ id, type, text });
-  };
+  }, [cardSet, getCardType, getCardText, replacePlaceholders]);
 
+  const memoizedValue = useMemo(
+    () => ({
+      running,
+      startGame,
+      stopGame,
+      cardSet,
+      backgroundColor: springProps.color,
+      setBackgroundColor,
+      players,
+      updatePlayers,
+      getCard,
+    }),
+    [
+      running,
+      startGame,
+      stopGame,
+      cardSet,
+      springProps.color,
+      setBackgroundColor,
+      players,
+      updatePlayers,
+      getCard,
+    ]
+  );
   return (
-    <GameContext.Provider
-      value={{
-        running,
-        startGame,
-        stopGame,
-        backgroundColor: props.color,
-        setBackgroundColor,
-        players,
-        updatePlayers,
-        getCard,
-      }}
-    >
+    <GameContext.Provider value={memoizedValue}>
       {children}
     </GameContext.Provider>
   );

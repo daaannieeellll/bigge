@@ -14,10 +14,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id, includeCards } = req.query;
     if (typeof id !== "string") {
       statusCode = 400;
-    } else if (!(await userAuthenticated(req))) {
-      statusCode = 403;
     } else if (req.method === "GET") {
       responseData = await getSets(id, includeCards);
+    }
+    // Authenticated methods
+    else if (!(await userAuthenticated(req))) {
+      statusCode = 403;
     } else if (req.method === "POST") {
       await postSets(req.body, id);
       statusCode = 201;

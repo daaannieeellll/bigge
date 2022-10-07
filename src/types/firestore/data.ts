@@ -9,9 +9,9 @@ export interface Set {
   created: Timestamp;
   ownerRef: DocumentReference;
   cardsRef: DocumentReference<string[][]>;
+  cards: string[][];
   // populated fields
   owner?: string;
-  cards?: string[][];
 }
 
 export type Cards = { data: string[] }[];
