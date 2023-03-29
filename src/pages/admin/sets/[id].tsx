@@ -18,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       permanent: false,
     },
   };
-  if (typeof id !== "string") return redirect;
+  // if (typeof id !== "string") return redirect;
 
   return await getSets(id, "yes")
     .then((data) => {
